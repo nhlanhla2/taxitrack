@@ -1,0 +1,206 @@
+# Mini Bus Taxi Passenger Counting System Configuration
+
+# Vehicle Information
+vehicle:
+  # Vehicle registration number (e.g., HDJ864L)
+  registration_number: "HDJ864L"
+  # Fleet identifier
+  fleet_id: "fleet_001"
+  # Vehicle details
+  make: "Toyota"
+  model: "Quantum"
+  year: 2020
+  color: "White"
+  capacity: 14
+  route: "Route 1"
+
+# Camera Configuration
+camera:
+  # Camera stream URL (RTSP for IP cameras)
+  stream_url: "rtsp://admin:password@192.168.1.100:554/stream1"
+  # Alternative: USB camera index (0, 1, 2, etc.)
+  usb_camera_index: 0
+  # Camera resolution
+  width: 1920
+  height: 1080
+  # Frames per second
+  fps: 30
+  # Camera type: 'rtsp_stream', 'http_stream', 'ip_camera', or 'usb_camera'
+  type: "rtsp_stream"
+  # Authentication (for IP cameras)
+  username: "admin"
+  password: "password123"
+  # Connection settings
+  timeout: 30
+  reconnect_attempts: 5
+  reconnect_delay: 5
+
+# Computer Vision Settings
+computer_vision:
+  # Person detection model
+  detection_model: "yolov8n.pt"  # yolov8n.pt, yolov8s.pt, yolov8m.pt
+  # Detection confidence threshold
+  confidence_threshold: 0.5
+  # Non-maximum suppression threshold
+  nms_threshold: 0.4
+  # Detection region of interest (ROI) - normalized coordinates [x1, y1, x2, y2]
+  roi: [0.0, 0.0, 1.0, 1.0]  # Full frame
+  # Entry/exit detection zones
+  entry_zone: [0.0, 0.0, 0.5, 1.0]  # Left half of frame
+  exit_zone: [0.5, 0.0, 1.0, 1.0]   # Right half of frame
+
+# Face Tracking Configuration
+face_tracking:
+  # Face recognition model
+  model: "hog"  # 'hog' or 'cnn' (cnn is more accurate but slower)
+  # Face encoding tolerance (lower = more strict)
+  tolerance: 0.6
+  # Maximum time to track a face without detection (seconds)
+  max_tracking_time: 10
+  # Minimum face size for detection (pixels)
+  min_face_size: 50
+
+# Trip Management
+trip:
+  # Maximum passenger capacity
+  max_capacity: 14
+  # Overload warning threshold
+  overload_threshold: 14
+  # Trip timeout (minutes) - auto-stop if no activity
+  timeout_minutes: 120
+  # Minimum trip duration (seconds)
+  min_duration: 60
+
+# Footage Recording Configuration
+footage:
+  # Enable trip recording
+  record_during_trips: true
+  # Storage path for footage files
+  storage_path: "footage"
+  # Maximum storage in GB
+  max_storage_gb: 50
+  # Retention period in days
+  retention_days: 30
+  # Video quality: low, medium, high, ultra
+  quality: "high"
+  # Recording FPS (lower = smaller files)
+  fps: 15
+  # Auto-upload to backend
+  auto_upload: true
+  # Upload on trip completion
+  upload_on_trip_end: true
+
+# Backend API Configuration
+backend:
+  # Backend API base URL
+  base_url: "https://api.taxicompany.com"
+  # API endpoints
+  endpoints:
+    trip_start: "/api/v1/trips/start"
+    trip_stop: "/api/v1/trips/stop"
+    trip_update: "/api/v1/trips/update"
+    footage_upload: "/api/v1/footage/upload"
+    vehicle_register: "/api/v1/vehicles"
+    health_check: "/api/v1/health"
+  # Authentication
+  api_key: "your-api-key-here"
+  # Request timeout (seconds)
+  timeout: 30
+  # Retry configuration
+  max_retries: 3
+  retry_delay: 5
+  # Update interval (seconds)
+  update_interval: 30
+
+# Live Streaming Configuration
+live_streaming:
+  # Enable live streaming
+  enabled: true
+  # Streaming server base URL
+  base_url: "https://stream.taxitrack.com"
+  # RTMP server for streaming
+  rtmp_server: "rtmp://stream.taxitrack.com/live"
+  # Local stream storage path
+  storage_path: "streams"
+  # Maximum concurrent streams per vehicle
+  max_concurrent_streams: 2
+  # Default stream quality
+  default_quality: "medium"
+  # Maximum viewers per stream
+  max_viewers_per_stream: 10
+  # Stream duration limit (minutes, 0 = unlimited)
+  max_duration_minutes: 120
+  # Auto-start streaming on trip start
+  auto_start_on_trip: false
+  # Stream authentication required
+  require_authentication: true
+  # Available quality levels
+  quality_levels:
+    low:
+      resolution: "640x480"
+      bitrate: "500kbps"
+      fps: 10
+    medium:
+      resolution: "1280x720"
+      bitrate: "1000kbps"
+      fps: 15
+    high:
+      resolution: "1920x1080"
+      bitrate: "2000kbps"
+      fps: 30
+  # HLS segment settings
+  hls:
+    segment_duration: 6
+    playlist_size: 5
+    cleanup_segments: true
+
+# Database Configuration
+database:
+  # SQLite database file path
+  url: "sqlite:///data/taxi_counter.db"
+  # Connection pool settings
+  pool_size: 5
+  max_overflow: 10
+  # Enable SQL query logging
+  echo: false
+
+# Logging Configuration
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: "INFO"
+  # Log file path
+  file: "logs/taxi_counter.log"
+  # Log rotation
+  max_file_size: "10MB"
+  backup_count: 5
+  # Console logging
+  console: true
+  # Structured logging format
+  format: "json"
+
+# System Configuration
+system:
+  # Device ID (unique identifier for this taxi)
+  device_id: "taxi_001"
+  # Location information
+  location:
+    city: "Cape Town"
+    route: "Route 1"
+  # Performance settings
+  max_cpu_usage: 80
+  max_memory_usage: 80
+  # Watchdog settings
+  watchdog_enabled: true
+  watchdog_timeout: 60
+
+# Development Settings
+development:
+  # Enable debug mode
+  debug: false
+  # Mock camera for testing
+  mock_camera: false
+  # Mock backend API
+  mock_backend: false
+  # Save debug images
+  save_debug_images: false
+  debug_image_path: "debug_images/"

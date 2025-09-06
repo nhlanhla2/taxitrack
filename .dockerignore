@@ -1,0 +1,43 @@
+# Git and version control
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+docs/
+README*
+
+# Development files
+.vscode/
+.idea/
+*.pyc
+__pycache__/
+.pytest_cache/
+.coverage
+
+# Logs and temporary files
+logs/
+*.log
+tmp/
+temp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env.local
+.env.development
+
+# Backup files
+backups/
+*.backup
+
+# Node modules (if any)
+node_modules/
+
+# Python virtual environments
+venv/
+env/
+.venv/

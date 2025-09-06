@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  taxi-api:
+    image: python:3.9-slim
+    container_name: taxi-hdj864l-api
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    environment:
+      - VEHICLE_REGISTRATION=HDJ864L
+      - CAMERA_IP=192.168.3.200
+      - CAMERA_USERNAME=admin
+      - CAMERA_PASSWORD=Random336#
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+    command: >
+      sh -c "
+        pip install --no-cache-dir fastapi uvicorn pydantic requests PyYAML python-dotenv &&
+        python3 api_server_simple.py
+      "
+    restart: unless-stopped
+    networks:
+      - taxi-network
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  taxi-network:
+    driver: bridge

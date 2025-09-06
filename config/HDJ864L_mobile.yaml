@@ -1,0 +1,130 @@
+# HDJ864L Taxi Configuration for Mobile Network Deployment
+# This configuration is optimized for mobile networks with dynamic IPs
+
+vehicle:
+  registration: "HDJ864L"
+  type: "taxi"
+  capacity: 14
+  driver_name: "TBD"
+
+# Camera configuration for mobile network
+camera:
+  # Use local network IP instead of public IP
+  # Configure your router to give camera a static local IP
+  ip: "192.168.1.100"  # Router's local IP for camera
+  type: "ip"
+  username: "admin"
+  password: "Random336#"
+  
+  # RTSP stream URL using local IP
+  stream_url: "rtsp://admin:Random336%23@192.168.1.100:554/stream1"
+  
+  # Camera settings
+  resolution:
+    width: 2304
+    height: 1296
+  fps: 25
+  
+  # Connection settings for mobile networks
+  connection:
+    timeout: 30          # Longer timeout for mobile networks
+    retry_attempts: 5    # More retries for unstable connections
+    retry_delay: 10      # Delay between retries
+    buffer_size: 1       # Smaller buffer for mobile networks
+
+# Processing configuration optimized for Pi
+processing:
+  model: "yolov8n.pt"    # Nano model for better performance on Pi
+  confidence_threshold: 0.5
+  device: "cpu"          # Force CPU on Pi (no GPU)
+  
+  # Optimizations for mobile deployment
+  frame_skip: 2          # Process every 2nd frame to save bandwidth
+  max_fps: 10            # Limit processing FPS
+  resize_factor: 0.5     # Resize frames for faster processing
+
+# Entry/Exit zones (adjust based on camera position)
+zones:
+  entry:
+    x1: 100
+    y1: 200
+    x2: 400
+    y2: 800
+  exit:
+    x1: 500
+    y1: 200
+    x2: 800
+    y2: 800
+
+# API configuration
+api:
+  host: "0.0.0.0"
+  port: 8000
+  
+  # Backend integration (when available)
+  backend:
+    enabled: true
+    url: "https://your-backend-api.com"
+    timeout: 30
+    retry_attempts: 3
+    
+    # Offline mode settings
+    offline_storage: true
+    sync_interval: 300    # Sync every 5 minutes when online
+
+# Logging configuration
+logging:
+  level: "INFO"
+  file: "/app/logs/taxi_system.log"
+  max_size: "10MB"
+  backup_count: 5
+
+# Mobile network specific settings
+network:
+  # Health check settings
+  health_check:
+    interval: 30
+    timeout: 10
+    retries: 3
+  
+  # Connection monitoring
+  connection_monitor:
+    enabled: true
+    check_interval: 60
+    restart_on_failure: true
+  
+  # Data usage optimization
+  data_optimization:
+    compress_logs: true
+    limit_video_quality: true
+    batch_api_calls: true
+
+# System monitoring
+monitoring:
+  # Resource monitoring
+  cpu_threshold: 80      # Restart if CPU > 80%
+  memory_threshold: 90   # Restart if Memory > 90%
+  disk_threshold: 95     # Alert if Disk > 95%
+  
+  # Temperature monitoring (important for Pi in vehicle)
+  temperature_threshold: 70  # Alert if temp > 70°C
+  
+  # Auto-restart settings
+  auto_restart:
+    enabled: true
+    max_restarts: 5
+    restart_window: 3600   # 1 hour window
+
+# Backup and recovery
+backup:
+  enabled: true
+  interval: 3600         # Backup every hour
+  retention_days: 7
+  location: "/app/backups"
+
+# Development and debugging
+debug:
+  enabled: false
+  save_frames: false
+  frame_output_dir: "/app/debug_frames"
+  verbose_logging: false

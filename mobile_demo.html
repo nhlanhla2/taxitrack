@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxi Fleet Mobile App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .mobile-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        
+        .vehicle-card {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .vehicle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .vehicle-reg {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .status-badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+        
+        .vehicle-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        
+        .info-item {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 8px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .video-container {
+            position: relative;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .video-stream {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .quality-selector {
+            margin-bottom: 15px;
+        }
+        
+        .quality-selector select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .stat-label {
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <div class="header">
+            <h1>🚖 Taxi Fleet Monitor</h1>
+            <p>Live Vehicle Streaming</p>
+        </div>
+        
+        <div id="vehicleContainer">
+            <div class="loading">Loading vehicles...</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let currentStream = null;
+        let streamStats = {};
+
+        async function loadVehicles() {
+            try {
+                const response = await fetch(`${API_BASE}/mobile/vehicles`);
+                const data = await response.json();
+                
+                const container = document.getElementById('vehicleContainer');
+                container.innerHTML = '';
+                
+                if (data.vehicles.length === 0) {
+                    container.innerHTML = '<div class="loading">No vehicles available</div>';
+                    return;
+                }
+                
+                data.vehicles.forEach(vehicle => {
+                    container.appendChild(createVehicleCard(vehicle));
+                });
+                
+            } catch (error) {
+                document.getElementById('vehicleContainer').innerHTML = 
+                    '<div class="error">Failed to load vehicles</div>';
+            }
+        }
+
+        function createVehicleCard(vehicle) {
+            const card = document.createElement('div');
+            card.className = 'vehicle-card';
+            
+            card.innerHTML = `
+                <div class="vehicle-header">
+                    <div class="vehicle-reg">${vehicle.registration_number}</div>
+                    <div class="status-badge">${vehicle.status.toUpperCase()}</div>
+                </div>
+                
+                <div class="vehicle-info">
+                    <div class="info-item">
+                        <div class="info-label">Make/Model</div>
+                        <div>${vehicle.make} ${vehicle.model}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Capacity</div>
+                        <div>${vehicle.capacity} passengers</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Location</div>
+                        <div>${vehicle.location.city}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Camera IP</div>
+                        <div>${vehicle.camera_ip}</div>
+                    </div>
+                </div>
+                
+                <div class="quality-selector">
+                    <select id="quality-${vehicle.vehicle_id}">
+                        <option value="low">Low Quality (480p)</option>
+                        <option value="medium" selected>Medium Quality (720p)</option>
+                        <option value="high">High Quality (1080p)</option>
+                    </select>
+                </div>
+                
+                <div class="video-container" id="video-container-${vehicle.vehicle_id}">
+                    <img id="stream-${vehicle.vehicle_id}" class="video-stream" style="display: none;">
+                    <div class="video-overlay" id="overlay-${vehicle.vehicle_id}">
+                        📹 Ready to stream
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="startStream('${vehicle.registration_number}', '${vehicle.vehicle_id}')">
+                        ▶️ Start Stream
+                    </button>
+                    <button class="btn btn-secondary" onclick="stopStream('${vehicle.vehicle_id}')">
+                        ⏹️ Stop
+                    </button>
+                    <button class="btn btn-secondary" onclick="getThumbnail('${vehicle.registration_number}', '${vehicle.vehicle_id}')">
+                        📸 Snapshot
+                    </button>
+                </div>
+                
+                <div class="stats" id="stats-${vehicle.vehicle_id}">
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Viewers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Uptime (min)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Frames</div>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function startStream(registrationNumber, vehicleId) {
+            const quality = document.getElementById(`quality-${vehicleId}`).value;
+            const streamImg = document.getElementById(`stream-${vehicleId}`);
+            const overlay = document.getElementById(`overlay-${vehicleId}`);
+            
+            const streamUrl = `${API_BASE}/mobile/vehicle/${registrationNumber}/stream?quality=${quality}`;
+            
+            streamImg.src = streamUrl;
+            streamImg.style.display = 'block';
+            overlay.textContent = `📹 LIVE - ${quality.toUpperCase()}`;
+            
+            currentStream = vehicleId;
+            
+            // Start stats updates
+            updateStats(registrationNumber, vehicleId);
+            setInterval(() => updateStats(registrationNumber, vehicleId), 5000);
+        }
+
+        function stopStream(vehicleId) {
+            const streamImg = document.getElementById(`stream-${vehicleId}`);
+            const overlay = document.getElementById(`overlay-${vehicleId}`);
+            
+            streamImg.style.display = 'none';
+            streamImg.src = '';
+            overlay.textContent = '📹 Stream stopped';
+            
+            if (currentStream === vehicleId) {
+                currentStream = null;
+            }
+        }
+
+        async function getThumbnail(registrationNumber, vehicleId) {
+            const streamImg = document.getElementById(`stream-${vehicleId}`);
+            const overlay = document.getElementById(`overlay-${vehicleId}`);
+            
+            const thumbnailUrl = `${API_BASE}/mobile/vehicle/${registrationNumber}/thumbnail?t=${Date.now()}`;
+            
+            streamImg.src = thumbnailUrl;
+            streamImg.style.display = 'block';
+            overlay.textContent = '📸 Snapshot captured';
+        }
+
+        async function updateStats(registrationNumber, vehicleId) {
+            try {
+                const response = await fetch(`${API_BASE}/mobile/vehicle/${registrationNumber}/stream/info`);
+                const data = await response.json();
+                
+                const statsContainer = document.getElementById(`stats-${vehicleId}`);
+                if (statsContainer) {
+                    statsContainer.innerHTML = `
+                        <div class="stat-item">
+                            <div class="stat-value">${data.current_viewers}</div>
+                            <div class="stat-label">Viewers</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${Math.round(data.uptime_seconds / 60)}</div>
+                            <div class="stat-label">Uptime (min)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${data.stream_status === 'active' ? '🟢' : '🔴'}</div>
+                            <div class="stat-label">Status</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to update stats:', error);
+            }
+        }
+
+        // Initialize app
+        loadVehicles();
+        
+        // Refresh vehicles every 30 seconds
+        setInterval(loadVehicles, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Local development overrides
+version: '3.8'
+
+services:
+  taxi-streaming:
+    environment:
+      - VEHICLE_REGISTRATION=HDJ864L
+      - CAMERA_IP=192.168.3.200
+      - CAMERA_USERNAME=admin
+      - CAMERA_PASSWORD=Random336#
+      - UPDATE_INTERVAL=180  # 3 minutes for development
+      - ENVIRONMENT=development
+    volumes:
+      # Mount source code for development
+      - .:/app
+      - ./logs:/app/logs
+      - ./config:/app/config
+    ports:
+      - "8000:8000"
+      - "8001:8001"  # Additional port for debugging

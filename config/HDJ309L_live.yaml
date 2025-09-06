@@ -1,0 +1,119 @@
+vehicle:
+  registration_number: HDJ864L
+  fleet_id: cape_town_fleet_001
+  make: Toyota
+  model: Quantum
+  year: null
+  color: ''
+  capacity: 14
+  route: ''
+
+camera:
+  type: rtsp_stream
+  stream_url: rtsp://192.168.3.200:554/stream1
+  username: admin
+  password: Random336#
+  width: 1920
+  height: 1080
+  fps: 30
+  timeout: 30
+  reconnect_attempts: 5
+  reconnect_delay: 5
+
+computer_vision:
+  detection_model: yolov8n.pt
+  confidence_threshold: 0.5
+  nms_threshold: 0.4
+  roi: [0.0, 0.0, 1.0, 1.0]
+  entry_zone: [0.0, 0.0, 0.5, 1.0]
+  exit_zone: [0.5, 0.0, 1.0, 1.0]
+
+face_tracking:
+  model: hog
+  tolerance: 0.6
+  max_tracking_time: 10
+  min_face_size: 50
+
+trip:
+  max_capacity: 14
+  timeout_minutes: 120
+  min_duration: 60
+
+footage:
+  record_during_trips: true
+  storage_path: footage
+  max_storage_gb: 50
+  retention_days: 30
+  quality: high
+  fps: 15
+  auto_upload: true
+  upload_on_trip_end: true
+
+backend:
+  base_url: https://api.taxitrack.com
+  endpoints:
+    trip_start: /api/v1/trips/start
+    trip_stop: /api/v1/trips/stop
+    trip_update: /api/v1/trips/update
+    footage_upload: /api/v1/footage/upload
+    vehicle_register: /api/v1/vehicles
+    health_check: /api/v1/health
+  api_key: ''
+  timeout: 30
+  max_retries: 3
+  retry_delay: 5
+  update_interval: 30
+
+live_streaming:
+  enabled: true
+  base_url: https://stream.taxitrack.com
+  rtmp_server: rtmp://stream.taxitrack.com/live
+  storage_path: streams
+  max_concurrent_streams: 2
+  default_quality: medium
+  max_viewers_per_stream: 10
+  max_duration_minutes: 120
+  auto_start_on_trip: false
+  require_authentication: true
+  quality_levels:
+    low:
+      resolution: 640x480
+      bitrate: 500kbps
+      fps: 10
+    medium:
+      resolution: 1280x720
+      bitrate: 1000kbps
+      fps: 15
+    high:
+      resolution: 1920x1080
+      bitrate: 2000kbps
+      fps: 30
+  hls:
+    segment_duration: 6
+    playlist_size: 5
+    cleanup_segments: true
+
+system:
+  device_id: rpi_HDJ864L_live_cam
+  location:
+    city: Cape Town
+    route: ''
+  max_cpu_usage: 80
+  max_memory_usage: 80
+  watchdog_enabled: true
+  watchdog_timeout: 60
+
+logging:
+  level: INFO
+  file: logs/taxi_counter.log
+  max_file_size: 10MB
+  backup_count: 5
+  console: true
+  format: json
+
+development:
+  debug: false
+  mock_camera: false
+  mock_backend: false
+  save_debug_images: false
+  debug_image_path: debug_images/

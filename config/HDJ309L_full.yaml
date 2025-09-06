@@ -1,0 +1,93 @@
+backend:
+  api_key: null
+  base_url: https://api.taxitrack.com
+  endpoints:
+    footage_upload: /api/v1/footage/upload
+    health_check: /api/v1/health
+    trip_start: /api/v1/trips/start
+    trip_stop: /api/v1/trips/stop
+    trip_update: /api/v1/trips/update
+    vehicle_register: /api/v1/vehicles
+  max_retries: 3
+  retry_delay: 5
+  timeout: 30
+  update_interval: 30
+camera:
+  fps: 30
+  height: 1080
+  password: Random336#
+  reconnect_attempts: 5
+  reconnect_delay: 5
+  stream_url: rtsp://192.168.1.100:554/stream1
+  timeout: 30
+  type: rtsp_stream
+  username: admin
+  width: 1920
+computer_vision:
+  confidence_threshold: 0.5
+  detection_model: yolov8n.pt
+  entry_zone:
+  - 0.0
+  - 0.0
+  - 0.5
+  - 1.0
+  exit_zone:
+  - 0.5
+  - 0.0
+  - 1.0
+  - 1.0
+  nms_threshold: 0.4
+  roi:
+  - 0.0
+  - 0.0
+  - 1.0
+  - 1.0
+development:
+  debug: false
+  debug_image_path: debug_images/
+  mock_backend: false
+  mock_camera: false
+  save_debug_images: false
+face_tracking:
+  max_tracking_time: 10
+  min_face_size: 50
+  model: hog
+  tolerance: 0.6
+footage:
+  auto_upload: true
+  fps: 15
+  max_storage_gb: 50
+  quality: high
+  record_during_trips: true
+  retention_days: 30
+  storage_path: footage
+  upload_on_trip_end: true
+logging:
+  backup_count: 5
+  console: true
+  file: logs/taxi_counter.log
+  format: json
+  level: INFO
+  max_file_size: 10MB
+system:
+  device_id: rpi_HDJ864L_5c452b9f
+  location:
+    city: null
+    route: null
+  max_cpu_usage: 80
+  max_memory_usage: 80
+  watchdog_enabled: true
+  watchdog_timeout: 60
+trip:
+  max_capacity: 14
+  min_duration: 60
+  timeout_minutes: 120
+vehicle:
+  capacity: 14
+  color: null
+  fleet_id: cape_town_fleet_001
+  make: Toyota
+  model: Quantum
+  registration_number: HDJ864L
+  route: null
+  year: null

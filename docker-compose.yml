@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  taxi-streaming:
+    build: .
+    container_name: taxi-hdj864l-stream
+    ports:
+      - "8000:8000"
+    environment:
+      - VEHICLE_REGISTRATION=HDJ864L
+      - CAMERA_IP=192.168.3.200
+      - CAMERA_USERNAME=admin
+      - CAMERA_PASSWORD=Random336#
+      - CAMERA_URL=rtsp://admin:Random336%23@192.168.3.200:554/stream1
+      - UPDATE_INTERVAL=300  # Check for updates every 5 minutes
+      - ENVIRONMENT=production
+      - PYTHONPATH=/app
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - footage_data:/app/footage
+      - git_cache:/app/.git
+    restart: unless-stopped
+    networks:
+      - taxi-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Lightweight monitoring
+  watchtower:
+    image: containrrr/watchtower
+    container_name: taxi-updater
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=3600  # Check every hour
+      - WATCHTOWER_INCLUDE_STOPPED=true
+    restart: unless-stopped
+    networks:
+      - taxi-network
+
+volumes:
+  footage_data:
+  git_cache:
+
+networks:
+  taxi-network:
+    driver: bridge
