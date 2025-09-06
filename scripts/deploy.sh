@@ -7,7 +7,7 @@ set -e
 
 # Configuration
 VEHICLE_REG="${VEHICLE_REGISTRATION:-HDJ864L}"
-CAMERA_IP="${CAMERA_IP:-192.168.3.200}"
+CAMERA_IP="${CAMERA_IP:-192.168.8.200}"
 DEPLOYMENT_MODE="${DEPLOYMENT_MODE:-local}"  # local, cloud, edge
 UPDATE_STRATEGY="${UPDATE_STRATEGY:-git}"    # git, webhook, registry
 

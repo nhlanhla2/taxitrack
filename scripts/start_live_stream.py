@@ -2,7 +2,7 @@
 """
 Start Live Stream
 
-Start live streaming for the camera at 192.168.3.200
+Start live streaming for the camera at 192.168.8.200
 """
 
 import cv2
@@ -28,7 +28,7 @@ class LiveStreamDemo:
     """Live streaming demonstration for the taxi camera."""
     
     def __init__(self):
-        self.camera_url = "rtsp://admin:Random336%23@192.168.3.200:554/stream1"
+        self.camera_url = "rtsp://admin:Random336%23@192.168.8.200:554/stream1"
         self.running = False
         self.frame_count = 0
         self.viewer_count = 0
@@ -182,14 +182,14 @@ class LiveStreamDemo:
     def run_demo(self):
         """Run the complete live streaming demo."""
         logger.info("🚖 TAXI LIVE STREAMING DEMO - HDJ864L")
-        logger.info("Camera: 192.168.3.200")
+        logger.info("Camera: 192.168.8.200")
         logger.info("=" * 60)
         
         # Test camera connection
         if not self.test_camera_connection():
             logger.error("❌ Camera connection failed. Please check:")
             logger.error("   1. Camera is powered on")
-            logger.error("   2. Network connectivity to 192.168.3.200")
+            logger.error("   2. Network connectivity to 192.168.8.200")
             logger.error("   3. Credentials: admin / Random336#")
             logger.error("   4. RTSP stream path: /stream1")
             return False

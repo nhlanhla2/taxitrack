@@ -4,10 +4,10 @@
 set -e
 
 # Configuration
-PI_USER="pi"
+PI_USER="admin"
 PI_HOST=""
-REPO_URL="https://github.com/yourusername/taxi-streaming.git"
-PROJECT_DIR="taxi-streaming"
+REPO_URL="https://github.com/nhlanhla2/taxitrack.git"
+PROJECT_DIR="taxitrack"
 
 # Colors for output
 RED='\033[0;31m'
@@ -56,7 +56,7 @@ if ! command -v docker &> /dev/null; then
     echo "Installing Docker..."
     curl -fsSL https://get.docker.com -o get-docker.sh
     sudo sh get-docker.sh
-    sudo usermod -aG docker pi
+    sudo usermod -aG docker admin
     rm get-docker.sh
     echo "Docker installed successfully"
 else
@@ -127,7 +127,7 @@ ssh $PI_USER@$PI_HOST << 'EOF'
 cat > ~/update_taxi_system.sh << 'SCRIPT_EOF'
 #!/bin/bash
 echo "=== Updating Taxi System ==="
-cd ~/taxi-streaming
+cd ~/taxitrack
 
 echo "Pulling latest code..."
 git pull origin main
@@ -157,7 +157,7 @@ EOF
 print_status "Setting up monitoring..."
 ssh $PI_USER@$PI_HOST << 'EOF'
 # Add health check to crontab
-(crontab -l 2>/dev/null; echo "*/5 * * * * curl -f http://localhost:8000/health >/dev/null 2>&1 || (cd ~/taxi-streaming && docker-compose -f docker-compose.simple.yml restart)") | crontab -
+(crontab -l 2>/dev/null; echo "*/5 * * * * curl -f http://localhost:8000/health >/dev/null 2>&1 || (cd ~/taxitrack && docker-compose -f docker-compose.simple.yml restart)") | crontab -
 echo "Health monitoring cron job added"
 EOF
 

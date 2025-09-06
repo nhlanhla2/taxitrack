@@ -146,9 +146,9 @@ async def get_config():
                 "type": "taxi"
             },
             "camera": {
-                "ip": os.getenv("CAMERA_IP", "192.168.3.200"),
+                "ip": os.getenv("CAMERA_IP", "192.168.8.200"),
                 "type": "ip",
-                "stream_url": f"rtsp://{os.getenv('CAMERA_USERNAME', 'admin')}:{os.getenv('CAMERA_PASSWORD', 'Random336%23')}@{os.getenv('CAMERA_IP', '192.168.3.200')}:554/stream1"
+                "stream_url": f"rtsp://{os.getenv('CAMERA_USERNAME', 'admin')}:{os.getenv('CAMERA_PASSWORD', 'Random336%23')}@{os.getenv('CAMERA_IP', '192.168.8.200')}:554/stream1"
             },
             "processing": {
                 "model": "yolov8n.pt",
@@ -205,7 +205,7 @@ async def get_live_footage(vehicle_id: str):
         "message": f"Live footage endpoint for {vehicle_id}",
         "status": "simulated",
         "vehicle_id": vehicle_id,
-        "stream_url": f"rtsp://{os.getenv('CAMERA_USERNAME', 'admin')}:{os.getenv('CAMERA_PASSWORD', 'Random336%23')}@{os.getenv('CAMERA_IP', '192.168.3.200')}:554/stream1",
+        "stream_url": f"rtsp://{os.getenv('CAMERA_USERNAME', 'admin')}:{os.getenv('CAMERA_PASSWORD', 'Random336%23')}@{os.getenv('CAMERA_IP', '192.168.8.200')}:554/stream1",
         "note": "This is a simulated response. In production, this would stream live camera footage.",
         "timestamp": datetime.now().isoformat()
     })
@@ -241,7 +241,7 @@ async def list_vehicles():
 
 if __name__ == "__main__":
     logger.info(f"Starting Taxi API Server for vehicle: {VEHICLE_ID}")
-    logger.info(f"Camera IP: {os.getenv('CAMERA_IP', '192.168.3.200')}")
+    logger.info(f"Camera IP: {os.getenv('CAMERA_IP', '192.168.8.200')}")
     
     # Run the server
     uvicorn.run(

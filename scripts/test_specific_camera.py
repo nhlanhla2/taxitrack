@@ -2,7 +2,7 @@
 """
 Test Specific Camera
 
-Test the camera at 192.168.3.200 with the provided credentials.
+Test the camera at 192.168.8.200 with the provided credentials.
 """
 
 import cv2
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 def test_camera():
     """Test the specific camera."""
-    camera_url = "rtsp://admin:Random336%23@192.168.3.200:554/stream1"
+    camera_url = "rtsp://admin:Random336%23@192.168.8.200:554/stream1"
     
     logger.info(f"Testing camera: {camera_url}")
     
@@ -68,7 +68,7 @@ def test_camera():
 
 def main():
     """Main test function."""
-    logger.info("🎥 Testing Camera at 192.168.3.200")
+    logger.info("🎥 Testing Camera at 192.168.8.200")
     logger.info("=" * 50)
     
     success = test_camera()

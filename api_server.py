@@ -2,7 +2,7 @@
 """
 Live Streaming API Server
 
-FastAPI server for taxi live streaming with your camera at 192.168.3.200
+FastAPI server for taxi live streaming with your camera at 192.168.8.200
 """
 
 from fastapi import FastAPI, HTTPException, Request
@@ -39,7 +39,7 @@ app.add_middleware(
 )
 
 # Global variables
-CAMERA_URL = "rtsp://admin:Random336%23@192.168.3.200:554/stream1"
+CAMERA_URL = "rtsp://admin:Random336%23@192.168.8.200:554/stream1"
 active_streams = {}
 stream_stats = {
     "total_connections": 0,
@@ -131,7 +131,7 @@ async def root():
     return {
         "message": "Taxi Live Streaming API",
         "vehicle": "HDJ864L",
-        "camera": "192.168.3.200",
+        "camera": "192.168.8.200",
         "status": "active" if camera_stream.running else "inactive",
         "endpoints": {
             "stream_info": "/api/v1/footage/HDJ864L/live",
@@ -163,7 +163,7 @@ async def get_stats():
     return {
         "vehicle_id": "HDJ864L_001",
         "registration_number": "HDJ864L",
-        "camera_ip": "192.168.3.200",
+        "camera_ip": "192.168.8.200",
         "stream_status": "active" if camera_stream.running else "inactive",
         "uptime_seconds": uptime,
         "frames_captured": camera_stream.frame_count,
@@ -187,7 +187,7 @@ async def get_live_stream_info():
         "registration_number": "HDJ864L",
         "stream_id": "HDJ864L_live_stream",
         "stream_status": "active",
-        "camera_ip": "192.168.3.200",
+        "camera_ip": "192.168.8.200",
         "stream_urls": {
             "high": "http://localhost:8000/stream/high.m3u8",
             "medium": "http://localhost:8000/stream/medium.m3u8",
@@ -274,7 +274,7 @@ async def get_active_streams():
             "viewers": stream_stats["current_viewers"],
             "started_at": stream_stats["start_time"].isoformat(),
             "uptime_seconds": (datetime.now() - stream_stats["start_time"]).total_seconds(),
-            "camera_ip": "192.168.3.200"
+            "camera_ip": "192.168.8.200"
         })
 
     return {
@@ -398,7 +398,7 @@ async def get_viewer_page():
         <div class="container">
             <div class="header">
                 <h1>🚖 HDJ864L Live Camera Feed</h1>
-                <p><strong>Camera IP:</strong> 192.168.3.200 | <strong>Status:</strong> <span class="status-active">LIVE</span></p>
+                <p><strong>Camera IP:</strong> 192.168.8.200 | <strong>Status:</strong> <span class="status-active">LIVE</span></p>
             </div>
 
             <div class="video-container">
@@ -498,7 +498,7 @@ async def get_vehicles_list():
             "model": "Quantum",
             "capacity": 14,
             "fleet_id": "cape_town_fleet_001",
-            "camera_ip": "192.168.3.200",
+            "camera_ip": "192.168.8.200",
             "status": "active",
             "location": {
                 "city": "Cape Town",
@@ -534,7 +534,7 @@ async def get_vehicle_details(registration_number: str):
         "capacity": 14,
         "fleet_id": "cape_town_fleet_001",
         "camera": {
-            "ip": "192.168.3.200",
+            "ip": "192.168.8.200",
             "status": "connected" if camera_stream.running else "disconnected",
             "resolution": "1920x1080",
             "fps": 30
@@ -718,7 +718,7 @@ async def get_mobile_stream_info(registration_number: str, request: Request = No
 
 if __name__ == "__main__":
     logger.info("🚖 Starting Taxi Live Streaming Server")
-    logger.info("🎥 Camera: 192.168.3.200 (HDJ864L)")
+    logger.info("🎥 Camera: 192.168.8.200 (HDJ864L)")
     logger.info("🌐 Server: http://localhost:8000")
     
     uvicorn.run(

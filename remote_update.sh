@@ -4,9 +4,9 @@
 set -e
 
 # Configuration
-PI_USER="pi"
+PI_USER="admin"
 PI_HOST=""
-PROJECT_DIR="taxi-streaming"
+PROJECT_DIR="taxitrack"
 
 # Colors for output
 RED='\033[0;31m'

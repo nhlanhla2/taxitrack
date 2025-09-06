@@ -8,10 +8,10 @@ services:
       - "8000:8000"
     environment:
       - VEHICLE_REGISTRATION=HDJ864L
-      - CAMERA_IP=192.168.3.200
+      - CAMERA_IP=192.168.8.200
       - CAMERA_USERNAME=admin
       - CAMERA_PASSWORD=Random336#
-      - CAMERA_URL=rtsp://admin:Random336%23@192.168.3.200:554/stream1
+      - CAMERA_URL=rtsp://admin:Random336%23@192.168.8.200:554/stream1
       - UPDATE_INTERVAL=300  # Check for updates every 5 minutes
       - ENVIRONMENT=production
       - PYTHONPATH=/app
