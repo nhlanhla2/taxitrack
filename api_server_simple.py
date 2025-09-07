@@ -239,6 +239,86 @@ async def list_vehicles():
         "total": 1
     }
 
+@app.get("/mobile/vehicles")
+async def mobile_list_vehicles():
+    """Mobile API: List all available vehicles"""
+    return {
+        "vehicles": [
+            {
+                "vehicle_id": VEHICLE_ID,
+                "registration_number": VEHICLE_ID,
+                "type": "mini_bus_taxi",
+                "status": "active",
+                "location": {
+                    "latitude": -33.9249,  # Cape Town coordinates
+                    "longitude": 18.4241,
+                    "address": "Cape Town, South Africa"
+                },
+                "camera": {
+                    "ip": os.getenv("CAMERA_IP", "192.168.8.200"),
+                    "status": "connected",
+                    "stream_url": f"rtsp://{os.getenv('CAMERA_USERNAME', 'admin')}:{os.getenv('CAMERA_PASSWORD', 'Random336%23')}@{os.getenv('CAMERA_IP', '192.168.8.200')}:554/stream1"
+                },
+                "passenger_count": current_passenger_count,
+                "capacity": 14,
+                "last_update": datetime.now().isoformat(),
+                "trip_status": "in_progress" if current_passenger_count > 0 else "waiting"
+            }
+        ],
+        "total_vehicles": 1,
+        "active_vehicles": 1,
+        "timestamp": datetime.now().isoformat()
+    }
+
+@app.get("/mobile/vehicle/{vehicle_id}")
+async def mobile_get_vehicle(vehicle_id: str):
+    """Mobile API: Get specific vehicle details"""
+    if vehicle_id != VEHICLE_ID:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+    
+    return {
+        "vehicle_id": VEHICLE_ID,
+        "registration_number": VEHICLE_ID,
+        "type": "mini_bus_taxi",
+        "status": "active",
+        "location": {
+            "latitude": -33.9249,
+            "longitude": 18.4241,
+            "address": "Cape Town, South Africa"
+        },
+        "camera": {
+            "ip": os.getenv("CAMERA_IP", "192.168.8.200"),
+            "status": "connected",
+            "stream_url": f"rtsp://{os.getenv('CAMERA_USERNAME', 'admin')}:{os.getenv('CAMERA_PASSWORD', 'Random336%23')}@{os.getenv('CAMERA_IP', '192.168.8.200')}:554/stream1"
+        },
+        "passenger_count": current_passenger_count,
+        "capacity": 14,
+        "current_trip": {
+            "trip_id": f"trip_{VEHICLE_ID}_{datetime.now().strftime('%Y%m%d_%H%M')}",
+            "start_time": datetime.now().isoformat(),
+            "status": "in_progress" if current_passenger_count > 0 else "waiting",
+            "passenger_count": current_passenger_count
+        },
+        "last_update": datetime.now().isoformat()
+    }
+
+@app.get("/mobile/vehicle/{vehicle_id}/stream/info")
+async def mobile_get_stream_info(vehicle_id: str):
+    """Mobile API: Get vehicle stream information"""
+    if vehicle_id != VEHICLE_ID:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+    
+    return {
+        "vehicle_id": vehicle_id,
+        "stream_url": f"rtsp://{os.getenv('CAMERA_USERNAME', 'admin')}:{os.getenv('CAMERA_PASSWORD', 'Random336%23')}@{os.getenv('CAMERA_IP', '192.168.8.200')}:554/stream1",
+        "hls_url": f"http://100.69.8.80:8000/hls/{vehicle_id}/playlist.m3u8",
+        "status": "active",
+        "resolution": "1920x1080",
+        "fps": 30,
+        "camera_ip": os.getenv("CAMERA_IP", "192.168.8.200"),
+        "timestamp": datetime.now().isoformat()
+    }
+
 if __name__ == "__main__":
     logger.info(f"Starting Taxi API Server for vehicle: {VEHICLE_ID}")
     logger.info(f"Camera IP: {os.getenv('CAMERA_IP', '192.168.8.200')}")
